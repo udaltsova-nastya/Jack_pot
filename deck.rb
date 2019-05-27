@@ -1,15 +1,16 @@
+##
 # 1. can store cards (52 by default)
 # 2. shuffles cards on initialize
-# 3. can give several cards
+# 3. can give several cards (no more than remaining cards count)
 # 4. can return remaining cards count
 class Deck
   def initialize
     @cards = initialize_cards.shuffle
   end
 
-  def take(count)
-    # we need to check that we have enough cards 
-    @cards.pop(count)
+  def take(cards_count)
+    raise ArgumentError, "Недостаточно карт в колоде" if cards_count > count
+    @cards.pop(cards_count)
   end
 
   def size

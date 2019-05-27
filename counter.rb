@@ -1,0 +1,3 @@
+# счетчик
+class Counter
+end

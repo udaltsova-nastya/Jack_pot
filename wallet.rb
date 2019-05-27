@@ -1,3 +1,4 @@
+##
 # 1. can store money 
 # 2. can transfer money to another wallet (no more than stored amount)
 # 3. can receive money from another wallet
@@ -8,7 +9,6 @@ class Wallet
     @amount = amount
   end
 
-  # use named arguments
   def transfer(wallet:, amount:)
     @amount -= amount
     wallet.receive(amount: amount)
