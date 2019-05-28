@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 ##
-# 1. can store money 
+# 1. can store money
 # 2. can transfer money to another wallet (no more than stored amount)
 # 3. can receive money from another wallet
 class Wallet

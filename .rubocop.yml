@@ -1,0 +1,31 @@
+AllCops:
+  DisplayCopNames: true
+  StyleGuideCopsOnly: false
+  TargetRubyVersion: 2.6.3
+
+# Привыкаю писать документацию к каждому классу и модулю
+Documentation:
+  Enabled: true
+
+# Перевод строк -- только в стиле Unix
+Layout/EndOfLine:
+  EnforcedStyle: lf
+
+# Ну я не знаю...
+# Это вспомогательный класс, может не будем его пока резать?
+Metrics/ClassLength:
+  Exclude:
+    - rail_road_interface.rb
+
+# Ну не 80 же?
+Metrics/LineLength:
+  Max: 120
+
+# Это учебный проект и в нём уже очень много комментариев на русском,
+# так что извините )
+Style/AsciiComments:
+  Enabled: false
+
+# Всегда используем только двойные кавычки
+Style/StringLiterals:
+  EnforcedStyle: double_quotes

@@ -1,3 +1,0 @@
-# счетчик
-class Counter
-end
