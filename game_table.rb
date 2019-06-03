@@ -3,8 +3,13 @@
 ##
 # Stores given cards
 class GameTable
-  def put_cards(cards:)
-    @cards ||= []
-    @cards << cards
+  attr_reader :cards
+
+  def initialize
+    @cards = []
+  end
+
+  def put(new_cards:)
+    cards << new_cards
   end
 end
