@@ -48,6 +48,7 @@ class Deck
 
   def take(cards_count)
     raise ArgumentError, "Недостаточно карт в колоде" if cards_count > count
+
     cards.pop(cards_count)
   end
 
@@ -55,7 +56,7 @@ class Deck
     cards.size
   end
   alias count size
-  alias lenght size 
+  alias lenght size
 
   private
 

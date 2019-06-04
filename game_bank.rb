@@ -1,10 +1,11 @@
+# frozen_string_literal: true
+
 ##
 # Creates accouns for given account name and amount
 #   if account already exists we raise an error
 # transfers given amount from one account to another
 #  if either account is missing - raises an error
-#  if sender don't have sufficient amount - raises an error 
-
+#  if sender don't have sufficient amount - raises an error
 class GameBank
   def initialize
     @accounts = {}
@@ -12,6 +13,7 @@ class GameBank
 
   def create_account(name:, amount: 0)
     raise ArgumentError, "Счет с таким названием уже существует" if account_exists?(name)
+
     accounts[name] = amount
   end
 
@@ -19,8 +21,9 @@ class GameBank
     raise ArgumentError, "Счет отправителя не существует" unless account_exists?(from)
     raise ArgumentError, "Счет получателя не существует" unless account_exists?(to)
     raise ArgumentError, "Недостаточно средств на счете отправителя" if amount > account_amount(from)
+
     accounts[from] -= amount
-    accounts[to] += amount 
+    accounts[to] += amount
   end
 
   private

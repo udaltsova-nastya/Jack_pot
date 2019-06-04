@@ -14,7 +14,7 @@ class ScoreCounter
     @pictures = pictures
     @aces = aces
   end
-  
+
   def score(cards:)
     # arr1 & arr2 - return a new array
     # containing elements common to arrays a1 and a2 (intersection)
@@ -51,9 +51,9 @@ class ScoreCounter
     return 0 if aces_count.zero?
 
     # then check if we can convert one ace card to 11
-    one_ace_can_score_11 = (11 - score_without_aces + aces_count).positive?
+    one_ace_can_score_eleven = (score_without_aces + aces_count <= 11)
 
-    if one_ace_can_score_11
+    if one_ace_can_score_eleven
       11 + (aces_count - 1)
     else
       # all ace cards still score as 1
