@@ -18,6 +18,12 @@ class GameTable
     score_counter.score(cards: cards)
   end
 
+  def size
+    cards.size
+  end
+  alias count size
+  alias lenght size
+
   private
 
   attr_reader :score_counter

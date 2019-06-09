@@ -26,14 +26,14 @@ class GameBank
     accounts[to] += amount
   end
 
+  def account_amount(name)
+    accounts[name]
+  end
+
   private
 
   def account_exists?(name)
     accounts.key?(name)
-  end
-
-  def account_amount(name)
-    accounts[name]
   end
 
   attr_reader :accounts

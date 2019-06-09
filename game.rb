@@ -2,7 +2,6 @@
 
 require_relative "deck"
 require_relative "score_counter"
-require_relative "player"
 require_relative "dealer"
 require_relative "croupier"
 require_relative "game_bank"
@@ -24,50 +23,90 @@ class Game
 
   AVAILABLE_ACTIONS = %i[skip_turn add_card show_cards].freeze
 
+  MAX_CARDS = 3
+  MAX_SCORE = 21
+
   def initialize
     start_game
   end
 
-  def round_start
+  def start_round
     @deck = create_deck
     place_a_bet
+
+    @player_game_table = create_game_table
+    @dealer_game_table = create_game_table
+    @dealer = create_dealer(dealer_game_table)
 
     deal_card_to_player(2)
     deal_card_to_dealer(2)
   end
 
   def player_turn(action:)
-    raise ArgumentError, "Неверное действие" unless AVAILABLE_ACTIONS.include?(action)
+    raise ArgumentError, "Unknown action" unless AVAILABLE_ACTIONS.include?(action)
 
     continue_round = send("player_#{action}")
+    continue_round = false if everyone_has_max_cards
 
-    continue_round = false ЕСЛИ У ВСЕХ УЖЕ ПО ТРИ КАРТЫ
+    return :continue_round if continue_round
 
-    return if continue_round
+    finish_round
+  end
 
-    round_finish
+  def player_can_add_cards?
+    player_game_table.count < MAX_CARDS && player_score < MAX_SCORE
+  end
+
+  def player_cards
+    player_game_table.cards
+  end
+
+  def player_score
+    player_game_table.score
+  end
+
+  def player_amount
+    game_bank.account_amount(:player)
+  end
+
+  def dealer_cards_count
+    dealer.cards_count
   end
 
   private
 
-  attr_reader :player, :dealer, :player_game_table, :dealer_game_table, :deck
+  attr_reader :dealer, :player_game_table, :dealer_game_table, :deck
 
   def start_game
-    @player_game_table = create_game_table
-    @player = create_player(player_game_table)
-
-    @dealer_game_table = create_game_table
-    @dealer = create_dealer(dealer_game_table)
-
     create_account(:game)
     create_account(:dealer, START_AMOUNT)
     create_account(:player, START_AMOUNT)
   end
 
-  def round_finish
+  def finish_round
     winner = select_winner
     payout(winner)
-    winner
+    { winner: winner, dealer: { cards: dealer.cards, score: dealer_score } }
+  end
+
+  def select_winner
+    return :dealer if player_score > MAX_SCORE || (dealer_score > player_score && dealer_score <= MAX_SCORE)
+    return :player if player_score > dealer_score || dealer_score > MAX_SCORE
+
+    nil
+  end
+
+  def payout(winner)
+    if winner.nil?
+      transfer(:game, :player, BET_AMOUNT)
+      transfer(:game, :dealer, BET_AMOUNT)
+    else
+      transfer(:game, winner, BET_AMOUNT * 2)
+    end
+  end
+
+  def dealer_score
+    dealer.score
   end
 
   def place_a_bet
@@ -95,12 +134,17 @@ class Game
     game_bank.transfer(from: from, to: to, amount: amount)
   end
 
+  def everyone_has_max_cards
+    player_game_table.count == MAX_CARDS && dealer_game_table.count == MAX_CARDS
+  end
+
   def player_skip_turn
     dealer_turn
   end
 
   def player_add_card
     deal_card_to_player
+    dealer_turn
     true
   end
 
@@ -119,10 +163,6 @@ class Game
   def dealer_add_card
     deal_card_to_dealer
     true
-  end
-
-  def create_player(game_table)
-    Player.new(game_table: game_table)
   end
 
   def create_dealer(game_table)
