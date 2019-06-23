@@ -1,49 +1,41 @@
 # frozen_string_literal: true
 
+require_relative "card"
+
 ##
 # 1. can store cards (52 by default)
 # 2. shuffles cards on initialize
 # 3. can give several cards (no more than remaining cards count)
 # 4. can return remaining cards count
 class Deck
-  SUITS = ["♠", "♥", "♦", "♣"].freeze
-  NUMBERS = %w[2 3 4 5 6 7 8 9 10].freeze
-  PICTURES = %w[J Q K].freeze
-  ACES = %w[A].freeze
-  FULL_DECK = NUMBERS + PICTURES + ACES
-
   class << self
-    def numbers
-      @numbers ||= all_suits_for(NUMBERS)
-    end
-
-    def pictures
-      @pictures ||= all_suits_for(PICTURES)
-    end
-
-    ##
-    # @return Array[String]
-    # ["A♠", "A♥", "A♦", "A♣"]
-    def aces
-      @aces ||= all_suits_for(ACES)
-    end
-
-    ##
-    # @return Array[String]
-    # ["2♠", "2♥", ..., "A♦", "A♣"]
-    def full_deck
-      @full_deck ||= numbers + pictures + aces
+    def all_cards
+      @all_cards ||= create_cards
     end
 
     private
 
-    def all_suits_for(card_values)
-      card_values.product(SUITS).map(&:join)
+    def create_cards
+      cards_values.product(cards_suits).map do |(value, suit)|
+        create_card(value, suit)
+      end
+    end
+
+    def create_card(value, suit)
+      Card.new(value: value, suit: suit)
+    end
+
+    def cards_values
+      Card::VALUES
+    end
+
+    def cards_suits
+      Card::SUITS
     end
   end
 
   def initialize
-    @cards = self.class.full_deck.shuffle
+    @cards = self.class.all_cards.shuffle
   end
 
   def take(cards_count)
@@ -56,7 +48,11 @@ class Deck
     cards.size
   end
   alias count size
-  alias lenght size
+  alias length size
+
+  def inspect
+    string = "#<#{self.class.name}:#{self.object_id} #{size} card(s)>"
+  end
 
   private
 

@@ -17,10 +17,6 @@ class Game
   START_AMOUNT = 100
   BET_AMOUNT = 10
 
-  DECK_NUMBERS = Deck.numbers
-  DECK_PICTURES = Deck.pictures
-  DECK_ACES = Deck.aces
-
   AVAILABLE_ACTIONS = %i[skip_turn add_card show_cards].freeze
 
   MAX_CARDS = 3
@@ -187,6 +183,6 @@ class Game
   end
 
   def score_counter
-    @score_counter ||= ScoreCounter.new(numbers: DECK_NUMBERS, pictures: DECK_PICTURES, aces: DECK_ACES)
+    @score_counter ||= ScoreCounter.new
   end
 end
